@@ -12,6 +12,10 @@ namespace YozhCtlLib
 {
     public partial class RoundProgress : UserControl
     {
+        public Color PbLineColor { get; set; } = Color.Green;
+        public Color PbBorderColor { get; set; } = Color.Black;
+        public Color PbBgColor { get; set; } = Color.FromArgb(200, 230, 200);
+
         float aAngle = 0f;
         float min = 0f;
         float max = 0f;
@@ -41,7 +45,7 @@ namespace YozhCtlLib
         public void SetValue(float val)
         {
             if (val > max || val < min) return;
-            float tmp = val / max * 100;
+            float tmp = val / max * 100f;
             tmp *= 3.6f;
             ShowPB(tmp);
         }
@@ -51,8 +55,10 @@ namespace YozhCtlLib
             this.max = max;
         }
 
+        float valForRepaint = 0f;
         private void ShowPB(float val)
         {
+            valForRepaint = val;
             gfx.Clear(Color.Transparent);
             SizeF f = gfx.MeasureString(Math.Round(val / 3.6).ToString(), fnt);
             float ll = (1000f - f.Width) / 2f;
@@ -60,9 +66,9 @@ namespace YozhCtlLib
             SizeF f2 = gfx.MeasureString("%", fnt2);
             float ll2 = (1000f - f2.Width) / 2f;
             float tt2 = (1000f - f2.Height) / 2f;
-            gfx.FillEllipse(new SolidBrush(Color.FromArgb(200, 230, 200)), 40, 40, 920, 920);
-            gfx.DrawArc(new Pen(Color.Black, 30), 30f, 30f, 940f, 940f, 0f, 360f);
-            gfx.DrawArc(new Pen(Color.Green, 150), 150f, 150f, 700f, 700f, aAngle, val);
+            gfx.FillEllipse(new SolidBrush(PbBgColor), 40, 40, 920, 920);
+            gfx.DrawArc(new Pen(PbBorderColor, 30), 30f, 30f, 940f, 940f, 0f, 360f);
+            gfx.DrawArc(new Pen(PbLineColor, 150), 150f, 150f, 700f, 700f, aAngle, val);
             gfx.DrawString("%", fnt2, new SolidBrush(Color.FromArgb(170, 200, 170)), ll2 + 10f, tt2 + 30f);
             gfx.DrawString(Math.Round(val / 3.6).ToString(), fnt, Brushes.Black, ll + 5f, tt + 10f);
             //gfx.DrawLine(new Pen(Color.Black), 500, 0, 500, 1000); // Debug line v
